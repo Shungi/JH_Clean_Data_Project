@@ -54,12 +54,18 @@ test_subjects <-read_lines("./UCI HAR Dataset/test/subject_test.txt")
 
 test_activity <-read_lines("./UCI HAR Dataset/test/y_test.txt")
 
-#replace the numbers with descriptive 
+#replace the numbers with descriptive values of the activity
 for(i in 1:6)
 {
         test_activity<-sub(old_activity[i],new_activity[i],test_activity)
 }
-test_activity
 
 test_values <-test_values %>% select(contains("mean")|contains("std"))
-     
+
+#bind subject and activity to test_values to make one test tibble
+test <-bind_cols(test_subjects,test_activity,test_values)   
+
+#rename the column 1 and 2 to something sensible
+test <- test %>% rename(subject = ...1, activity = ...2)
+
+test
