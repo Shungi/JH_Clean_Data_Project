@@ -30,10 +30,7 @@ unzip(zipfile ="./PhoneActivityData.zip", exdir = getwd())
 
 list.files()
 
-# grab needed files out of folder for training set, I set options
-# to digits = 8 because it was bugging me that it didn't print all the digits 
-# past the decimal
-
+# I get annoyed when I print something and my doubles get rounded 
 options(digits = 8)
 
 #features contains all the variable names needed for both the test and training 
@@ -41,9 +38,13 @@ options(digits = 8)
 
 features<-read_lines("./UCI HAR Dataset/features.txt")
 
+# setting up my labels I'll need to rename my activities
+
 old_activity <-c("1","2","3","4","5","6")
 new_activity <-c("walking","walkingupstairs","walkingdownstairs","sitting",
                  "standing","laying")
+
+#load up values test_values and subjects
 
 test_values<- read_table("./UCI HAR Dataset/test/X_test.txt", 
                          col_names = features)
@@ -55,11 +56,9 @@ test_subjects <-read_lines("./UCI HAR Dataset/test/subject_test.txt")
 test_activity <-read_lines("./UCI HAR Dataset/test/y_test.txt")
 
 #replace the numbers with descriptive values of the activity
-for(i in 1:6)
-{
-        test_activity<-sub(old_activity[i],new_activity[i],test_activity)
-}
 
+
+# create new table containing only standard deviations and means
 test_values <-test_values %>% select(contains("mean")|contains("std"))
 
 #bind subject and activity to test_values to make one test tibble
@@ -68,4 +67,34 @@ test <-bind_cols(test_subjects,test_activity,test_values)
 #rename the column 1 and 2 to something sensible
 test <- test %>% rename(subject = ...1, activity = ...2)
 
-test
+# load up files for and create tibble for training data
+
+training_values<- read_table("./UCI HAR Dataset/train/X_train.txt", 
+                         col_names = features)
+training_subjects <-read_lines("./UCI HAR Dataset/train/subject_train.txt")
+
+
+training_activity <-read_lines("./UCI HAR Dataset/train/y_train.txt")
+
+training_values <-training_values %>% select(contains("mean")|contains("std"))
+
+training <-bind_cols(training_subjects,training_activity,training_values)   
+
+training <- training %>% rename(subject = ...1, activity = ...2)
+
+
+# rowbind training and test data to make one dataset 
+
+fulldata <- bind_rows(test,training)
+
+#changing the class of subject to numeric and arranging it by subject
+fulldata <- fulldata %>% mutate(subject = as.numeric(subject)) %>%
+        arrange(subject)
+
+#replace the numbers with descriptive values of the activity
+for(i in 1:6){
+        fulldata$activity <-sub(old_activity[i],new_activity[i],fulldata$activity)
+}
+
+
+
