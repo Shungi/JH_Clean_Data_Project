@@ -55,8 +55,6 @@ test_subjects <-read_lines("./UCI HAR Dataset/test/subject_test.txt")
 
 test_activity <-read_lines("./UCI HAR Dataset/test/y_test.txt")
 
-#replace the numbers with descriptive values of the activity
-
 
 # create new table containing only standard deviations and means
 test_values <-test_values %>% select(contains("mean")|contains("std"))
@@ -67,12 +65,12 @@ test <-bind_cols(test_subjects,test_activity,test_values)
 #rename the column 1 and 2 to something sensible
 test <- test %>% rename(subject = ...1, activity = ...2)
 
-# load up files for and create tibble for training data
+# load up files for and create tibble for training data in the same way 
+# as for the test data
 
 training_values<- read_table("./UCI HAR Dataset/train/X_train.txt", 
                          col_names = features)
 training_subjects <-read_lines("./UCI HAR Dataset/train/subject_train.txt")
-
 
 training_activity <-read_lines("./UCI HAR Dataset/train/y_train.txt")
 
@@ -100,5 +98,14 @@ for(i in 1:6){
 # removed columns 49-54 because they are angle measurements not means or 
 # standard deviations
 fulldata <-fulldata[,-(49:54)]
+
+## Creating a new table with the means of each variable in full table first 
+## grouped by subject and then activity so each value is the mean of subject x 
+## doing activity b 
+
+variables <- colnames(fulldata)[3:82]
+
+newtable <-fulldata %>% group_by(subject,activity)%>%
+        summarise(across(.cols = all_of(variables), mean))
 
 
