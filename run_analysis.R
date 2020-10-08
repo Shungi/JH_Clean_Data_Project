@@ -93,8 +93,12 @@ fulldata <- fulldata %>% mutate(subject = as.numeric(subject)) %>%
 
 #replace the numbers with descriptive values of the activity
 for(i in 1:6){
-        fulldata$activity <-sub(old_activity[i],new_activity[i],fulldata$activity)
+        fulldata$activity <-sub(old_activity[i],new_activity[i],
+                                fulldata$activity)
 }
 
+# removed columns 49-54 because they are angle measurements not means or 
+# standard deviations
+fulldata <-fulldata[,-(49:54)]
 
 
