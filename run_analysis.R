@@ -108,4 +108,5 @@ variables <- colnames(fulldata)[3:82]
 newtable <-fulldata %>% group_by(subject,activity)%>%
         summarise(across(.cols = all_of(variables), mean))
 
-
+#write both tables to txt files for later use 
+write.table(fulldata, "./UCIdatameanstd.txt",row.names = FALSE)
