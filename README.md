@@ -16,7 +16,7 @@ The columns of the dataset were labeled with the provided variables given in the
 
 I chose not to rename the features as no I could come up with no better descriptions than the ones already provided. I have added the features_info.txt provided by UCI to serve as a variable codebook.  
 
-The second dataset is saved as UCIdatameanofmean.text was created from the UCIdatameanstd.txt (although in this case I used the tibble fulldata I created in the script ) which finds the average for each activity/subject combination.  
+The second dataset is saved as UCIdatameanofmean.text was created from the UCIdatameanstd.txt (although in this case I used the tibble fulldata I created in the script ) which finds the average of each variable for each activity/subject combination.  
 
 Per the principles of tidy data set forth by Hadley Wickham in his paper Tidy Data each column represents a variable and each row represents one observation. 
 
